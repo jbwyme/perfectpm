@@ -1,0 +1,22 @@
+{
+  "name": "perfectpm",
+  "version": "1.0.0",
+  "description": "a project management tool",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jbwyme/perfectpm.git"
+  },
+  "author": "j&j",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jbwyme/perfectpm/issues"
+  },
+  "homepage": "https://github.com/jbwyme/perfectpm#readme",
+  "dependencies": {
+    "express": "^4.13.2"
+  }
+}
