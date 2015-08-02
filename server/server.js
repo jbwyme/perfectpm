@@ -1,6 +1,7 @@
 var routedApp = require('./routed-app');
+var config = require('../config/base.json');
 
-var server = routedApp.listen(3000, function () {
+var server = routedApp.listen(config.host.port, function () {
   var host = server.address().address;
   var port = server.address().port;
 
