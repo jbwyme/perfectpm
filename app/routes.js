@@ -15,4 +15,18 @@ app.get('/health', function (req, res) {
     res.send('OK!');
 });
 
+app.get('/api/tasks', function (req, res) {
+
+	// TODO: should be populated from db
+    var createTask = function(name, description, estimate) {
+        return {name: name, description: description, estimate: estimate}
+    } 
+    
+    var tasks = [];
+    for (var i = 0; i < 100; i++) {
+        tasks.push(createTask("Task " + i, "Description for task " + i, 3));
+    }
+    res.send(JSON.stringify(tasks));
+});
+
 module.exports = app;
