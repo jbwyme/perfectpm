@@ -1,11 +1,6 @@
-var express = require('express');
-var app = express();
+var routedApp = require('./routed-app');
 
-app.get('/', function (req, res) {
-  res.send('Hello World!');
-});
-
-var server = app.listen(3000, function () {
+var server = routedApp.listen(3000, function () {
   var host = server.address().address;
   var port = server.address().port;
 
