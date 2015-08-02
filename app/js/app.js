@@ -1,4 +1,5 @@
 var React = require('react');
+require('less/index')
 
 var App = require('./components/App.react');
 
