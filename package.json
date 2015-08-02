@@ -16,7 +16,39 @@
     "url": "https://github.com/jbwyme/perfectpm/issues"
   },
   "homepage": "https://github.com/jbwyme/perfectpm#readme",
+
   "dependencies": {
-    "express": "^4.13.2"
+    "ejs": "^2.3.3",
+    "express": "^4.13.2",
+    "flux": "^2.0.1",
+    "react": "^0.13.3",
+    "winston": "^1.0.1"
+  },
+
+  "devDependencies": {
+    "browserify": "^6.2.0",
+    "envify": "^3.0.0",
+    "jest-cli": "^0.4.3",
+    "reactify": "^0.15.2",
+    "uglify-js": "~2.4.15",
+    "watchify": "^2.1.1"
+  },
+  
+  "scripts": {
+    "start": "watchify -o app/public/js/bundle.js -v -d app/js/app.js",
+    "build": "browserify . -t [envify --NODE_ENV production] | uglifyjs -cm > app/public/js/bundle.min.js",
+    "test": "jest"
+  },
+
+  "browserify": {
+    "transform": [
+      "reactify",
+      "envify"
+    ]
+  },
+
+  "jest": {
+    "rootDir": "./app/js"
   }
+
 }

@@ -1,4 +1,5 @@
 ```
 npm install
-node server/server.js
+node app/server.js
+npm start
 ```
