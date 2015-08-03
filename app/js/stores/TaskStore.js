@@ -14,6 +14,7 @@ _tasks.fetch().done(function() {
 })
 
 var _viewingTask;
+var _quickAddOpen = false;
 
 var TaskStore = assign({}, EventEmitter.prototype, {
 
@@ -31,6 +32,10 @@ var TaskStore = assign({}, EventEmitter.prototype, {
 
   viewingTask: function() {
     return _viewingTask;
+  },
+
+  quickAddOpen: function() { 
+    return _quickAddOpen;
   },
 
   emitChange: function() {
@@ -70,6 +75,16 @@ AppDispatcher.register(function(action) {
 
     case TaskConstants.TASK_CANCEL:
       _viewingTask = null;
+      TaskStore.emitChange();
+      break;
+
+    case TaskConstants.TASK_QUICK_ADD_OPEN:
+      _quickAddOpen = true;
+      TaskStore.emitChange();
+      break;
+
+    case TaskConstants.TASK_QUICK_ADD_CLOSE:
+      _quickAddOpen = false;
       TaskStore.emitChange();
       break;
 

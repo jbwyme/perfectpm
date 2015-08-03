@@ -7,6 +7,10 @@
 .app {
 	font-family: helvetica;
 
+	input[type=text] {
+		padding: 4px;
+	}
+
 	.header {
 		background-color: @primary;
 		color: #fff;
@@ -24,6 +28,7 @@
 
 			li {
 				list-style-type: none;
+
 				&.section {
 					background-color: @secondary;
 					color: #fff;
@@ -31,6 +36,40 @@
 					padding-top: 5px;
 					padding-bottom: 5px;
 					padding-left: 10px;
+				}
+
+				&.users-section {
+					position: relative;
+
+					.quick-add-btn {
+						float: right;
+						margin-right: 6px;
+						padding: 4px;
+						cursor: pointer;
+
+						&:hover {
+							color: yellow;
+						}
+					}
+
+					.quick-add-modal {
+						position: absolute;
+						z-index: 1;
+					  	background-color: @secondary;
+					  	right: 0px;
+					  	width: 190px;
+					  	padding: 10px;
+
+					  	input[type=text] {
+  							margin-bottom: 4px;
+  							width: 180px;
+					  	}
+
+					  	button {
+					  	  padding: 6px;
+						  float: right;
+					  	}
+					}
 				}
 
 				a {

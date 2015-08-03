@@ -4,7 +4,9 @@
   "description": "a project management tool",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "watchify -o app/public/js/bundle.js -v -d app/js/app.js",
+    "build": "browserify . -t [envify --NODE_ENV production] | uglifyjs -cm > app/public/js/bundle.min.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -16,9 +18,9 @@
     "url": "https://github.com/jbwyme/perfectpm/issues"
   },
   "homepage": "https://github.com/jbwyme/perfectpm#readme",
-
   "dependencies": {
     "backbone": "1.2.1",
+    "body-parser": "^1.13.3",
     "ejs": "^2.3.3",
     "express": "^4.13.2",
     "flux": "^2.0.3",
@@ -26,9 +28,9 @@
     "keymirror": "^0.1.1",
     "object-assign": "^3.0.0",
     "react": "^0.13.3",
+    "request": "^2.60.0",
     "winston": "^1.0.1"
   },
-
   "devDependencies": {
     "browserify": "^6.2.0",
     "envify": "^3.0.0",
@@ -37,22 +39,13 @@
     "uglify-js": "~2.4.15",
     "watchify": "^2.1.1"
   },
-  
-  "scripts": {
-    "start": "watchify -o app/public/js/bundle.js -v -d app/js/app.js",
-    "build": "browserify . -t [envify --NODE_ENV production] | uglifyjs -cm > app/public/js/bundle.min.js",
-    "test": "jest"
-  },
-
   "browserify": {
     "transform": [
       "reactify",
       "envify"
     ]
   },
-
   "jest": {
     "rootDir": "./app/js"
   }
-
 }

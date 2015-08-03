@@ -52,7 +52,20 @@ var TaskActions = {
       actionType: TaskConstants.TASK_CANCEL,
       id: id
     })
+  },
+
+  quickAddOpen: function() {
+    AppDispatcher.dispatch({
+      actionType: TaskConstants.TASK_QUICK_ADD_OPEN
+    })
+  },
+
+  quickAddClose: function() {
+    AppDispatcher.dispatch({
+      actionType: TaskConstants.TASK_QUICK_ADD_CLOSE
+    })
   }
+
 
 };
 

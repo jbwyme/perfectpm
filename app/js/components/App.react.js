@@ -1,22 +1,32 @@
+var ProjectActions = require('../actions/ProjectActions');
+var ProjectStore = require('../stores/ProjectStore');
 var React = require('react');
+var TaskActions = require('../actions/TaskActions');
 var TaskList = require('./TaskList.react');
 var TaskStore = require('../stores/TaskStore');
 var TaskViewer = require('./TaskViewer.react');
+var QuickAddProject = require('./QuickAddProject.react');
+var QuickAddTask = require('./QuickAddTask.react');
+var QuickAddUser = require('./QuickAddUser.react');
+var UserActions = require('../actions/UserActions');
+var UserStore = require('../stores/UserStore');
 
 var App = React.createClass({
 
   getInitialState: function() {
-    return {
-      viewingTask: null
-    };
+    return this._buildState();
   },
 
   componentDidMount: function() {
     TaskStore.addChangeListener(this._onChange);
+    UserStore.addChangeListener(this._onChange);
+    ProjectStore.addChangeListener(this._onChange);
   },
 
   componentWillUnmount: function() {
     TaskStore.removeChangeListener(this._onChange);
+    UserStore.removeChangeListener(this._onChange);
+    ProjectStore.removeChangeListener(this._onChange);
   },
 
 
@@ -28,6 +38,38 @@ var App = React.createClass({
           task={TaskStore.viewingTask()} />
     }
 
+    var addTaskBtn = <i className="fa fa-plus quick-add-btn" onClick={this._showAddTask}></i>
+    var quickAddTask;
+    if (this.state.quickAddTask) {
+        quickAddTask = <QuickAddTask />
+        addTaskBtn = <i className="fa fa-minus quick-add-btn" onClick={this._hideAddTask}></i>
+    }
+
+    var addProjectBtn = <i className="fa fa-plus quick-add-btn" onClick={this._showAddProject}></i>
+    var quickAddProject;
+    if (this.state.quickAddProject) {
+        quickAddProject = <QuickAddProject />
+        addProjectBtn = <i className="fa fa-minus quick-add-btn" onClick={this._hideAddProject}></i>
+    }
+
+    var addUserBtn = <i className="fa fa-plus quick-add-btn" onClick={this._showAddUser}></i>
+    var quickAddUser;
+    if (this.state.quickAddUser) {
+        quickAddUser = <QuickAddUser />
+        addUserBtn = <i className="fa fa-minus quick-add-btn" onClick={this._hideAddUser}></i>
+    }
+
+    var projects = []
+    this.state.projects.each(function(project) {
+      projects.push(<li><a href={"/#/project/" + project.id}>{project.get("name")}</a></li>)
+    });
+
+    var users = []
+    this.state.users.each(function(user) {
+      users.push(<li><a href={"/#/user/" + user.id}>{user.getName()}</a></li>)
+    });
+
+
   	return (
       <div>
         
@@ -35,26 +77,25 @@ var App = React.createClass({
           <div className="middle">
             <div className="nav">
               <ul>
-                <li className="section">Dashboard</li>
+              <li className="section users-section">
+                  Tasks {addTaskBtn}
+                  {quickAddTask}
+                </li>
                 <li><a href="#">My tasks</a></li>
-                <li className="section">Projects</li>
-                <li><a href="/#/project/1">Project 1</a></li>
-                <li><a href="/#/project/2">Project 2</a></li>
-                <li><a href="/#/project/3">Project 3</a></li>
-                <li><a href="/#/project/4">Project 4</a></li>
 
-                <li className="section">Teams</li>
-                <li><a href="/#/team/1">Team 1</a></li>
-                <li><a href="/#/team/2">Team 2</a></li>
-                <li><a href="/#/team/3">Team 3</a></li>
-                <li><a href="/#/team/4">Team 4</a></li>
+                <li className="section users-section">
+                  Projects {addProjectBtn}
+                  {quickAddProject}
+                </li>
+                {projects}
 
-                <li className="section">Users</li>
-                <li><a href="/#/user/1">User 1</a></li>
-                <li><a href="/#/user/2">User 2</a></li>
-                <li><a href="/#/user/3">User 3</a></li>
-                <li><a href="/#/user/4">User 4</a></li>
+                <li className="section users-section">
+                  Users {addUserBtn}
+                  {quickAddUser}
+                </li>
+                {users}
               </ul>
+              
             </div>
 
             <div className="body">
@@ -69,8 +110,43 @@ var App = React.createClass({
   	);
   },
 
+  _buildState: function() {
+    return {
+      viewingTask: TaskStore.viewingTask(), 
+      quickAddTask: TaskStore.quickAddOpen(), 
+      quickAddProject: ProjectStore.quickAddOpen(), 
+      quickAddUser: UserStore.quickAddOpen(),
+      projects: ProjectStore.getProjects(),
+      users: UserStore.getUsers()
+    }
+  },
+
   _onChange: function() {
-    this.setState({viewingTask: TaskStore.viewingTask()});
+    this.setState(this._buildState());
+  },
+
+  _showAddTask: function() {
+    TaskActions.quickAddOpen();
+  },
+
+  _hideAddTask: function() {
+    TaskActions.quickAddClose();
+  },
+
+  _showAddProject: function() {
+    ProjectActions.quickAddOpen();
+  },
+
+  _hideAddProject: function() {
+    ProjectActions.quickAddClose();
+  },
+
+  _showAddUser: function() {
+    UserActions.quickAddOpen();
+  },
+
+  _hideAddUser: function() {
+    UserActions.quickAddClose();
   }
 
 });

@@ -34,10 +34,10 @@ var TaskViewer = React.createClass({
   _save: function() {
     // probably not the right way to be doing this
     TaskActions.save(
-      React.findDOMNode(this.refs.id).value, 
-      React.findDOMNode(this.refs.name).value, 
-      React.findDOMNode(this.refs.description).value, 
-      React.findDOMNode(this.refs.estimate).value
+      this.refs.id.getDOMNode().value, 
+      this.refs.name.getDOMNode().value, 
+      this.refs.description.getDOMNode().value, 
+      this.refs.estimate.getDOMNode().value
     );
   },
 
