@@ -1,13 +1,32 @@
 var React = require('react');
 var TaskList = require('./TaskList.react');
-
+var TaskStore = require('../stores/TaskStore');
+var TaskViewer = require('./TaskViewer.react');
 
 var App = React.createClass({
 
-  /**
-   * @return {object}
-   */
+  getInitialState: function() {
+    return {
+      isViewingTask: false
+    };
+  },
+
+  componentDidMount: function() {
+    TaskStore.addChangeListener(this._onChange);
+  },
+
+  componentWillUnmount: function() {
+    TaskStore.removeChangeListener(this._onChange);
+  },
+
+
   render: function() {
+    var taskViewer;
+    if (this.state.isViewingTask) {
+      taskViewer =
+        <TaskViewer
+          task={TaskStore.viewingTask()} />
+    }
 
   	return (
       <div>
@@ -40,6 +59,7 @@ var App = React.createClass({
 
             <div className="body">
               {this.props.body}
+              {taskViewer}
             </div>
           </div>
 
@@ -47,6 +67,10 @@ var App = React.createClass({
 
       </div>
   	);
+  },
+
+  _onChange: function() {
+    this.setState({isViewingTask: !!TaskStore.viewingTask()});
   }
 
 });

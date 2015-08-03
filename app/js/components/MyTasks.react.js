@@ -5,7 +5,7 @@ var TaskStore = require('../stores/TaskStore');
 
 function getTaskState() {
   return {
-    tasks: TaskStore.forMe()
+    tasks: TaskStore.tasksForMe()
   };
 }
 

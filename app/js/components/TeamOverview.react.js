@@ -1,7 +1,7 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
 
-var TeamDetails = React.createClass({
+var TeamOverview = React.createClass({
 
   render: function() {
   return (
@@ -13,4 +13,4 @@ var TeamDetails = React.createClass({
   }
 });
 
-module.exports = TeamDetails;
+module.exports = TeamOverview;

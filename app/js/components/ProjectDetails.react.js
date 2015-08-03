@@ -5,7 +5,7 @@ var TaskStore = require('../stores/TaskStore');
 
 function getTaskState(projectId) {
   return {
-    tasks: TaskStore.forProject(projectId)
+    tasks: TaskStore.tasksForProject(projectId)
   };
 }
 

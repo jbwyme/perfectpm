@@ -5,38 +5,32 @@ var EventEmitter = require('events').EventEmitter;
 var CHANGE_EVENT = 'change';
 
 var TasksCollection = require('../models/TasksCollection');
+var TaskModel = require('../models/TaskModel');
+var TaskConstants = require('../constants/TaskConstants');
 
 var _tasks = new TasksCollection();
 _tasks.fetch().done(function() {
   TaskStore.emitChange();
 })
 
-function create(task) {
-
-}
-
-function update(id, updates) {
-
-}
-
-function updateAll(updates) {
-  for (var id in _tasks) {
-    update(id, updates);
-  }
-}
+var _viewingTask;
 
 var TaskStore = assign({}, EventEmitter.prototype, {
 
-  forMe: function() {
-    return this.forUser(1);
+  tasksForMe: function() {
+    return this.tasksForUser(1);
   },
 
-  forUser: function(id) {
+  tasksForUser: function(id) {
     return _tasks;
   },
 
-  forProject: function(id) {
+  tasksForProject: function(id) {
     return new TasksCollection(_tasks.slice(0, 3));
+  },
+
+  viewingTask: function() {
+    return _viewingTask;
   },
 
   emitChange: function() {
@@ -60,51 +54,22 @@ var TaskStore = assign({}, EventEmitter.prototype, {
 
 // Register callback to handle all updates
 AppDispatcher.register(function(action) {
-  var text;
 
   switch(action.actionType) {
-    case TodoConstants.TODO_CREATE:
-      text = action.text.trim();
-      if (text !== '') {
-        create(text);
-        TaskStore.emitChange();
-      }
-      break;
 
-    case TodoConstants.TODO_TOGGLE_COMPLETE_ALL:
-      if (TaskStore.areAllComplete()) {
-        updateAll({complete: false});
-      } else {
-        updateAll({complete: true});
-      }
+    case TaskConstants.TASK_VIEW:
+      _viewingTask = _tasks.get(action.id);
       TaskStore.emitChange();
       break;
 
-    case TodoConstants.TODO_UNDO_COMPLETE:
-      update(action.id, {complete: false});
+    case TaskConstants.TASK_SAVE:
+      (new TaskModel(action)).save();
+      _tasks.fetch();
       TaskStore.emitChange();
       break;
 
-    case TodoConstants.TODO_COMPLETE:
-      update(action.id, {complete: true});
-      TaskStore.emitChange();
-      break;
-
-    case TodoConstants.TODO_UPDATE_TEXT:
-      text = action.text.trim();
-      if (text !== '') {
-        update(action.id, {text: text});
-        TaskStore.emitChange();
-      }
-      break;
-
-    case TodoConstants.TODO_DESTROY:
-      destroy(action.id);
-      TaskStore.emitChange();
-      break;
-
-    case TodoConstants.TODO_DESTROY_COMPLETED:
-      destroyCompleted();
+    case TaskConstants.TASK_CANCEL:
+      _viewingTask = null;
       TaskStore.emitChange();
       break;
 

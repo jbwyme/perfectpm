@@ -7,7 +7,7 @@ var TaskList = React.createClass({
 
     var tasks = [];
     this.props.tasks.each(function(taskModel) {
-      tasks.push(<TaskItem key={taskModel.cid} task={taskModel.attributes} />);
+      tasks.push(<TaskItem key={taskModel.cid} task={taskModel} />);
     });
 
     return (
