@@ -7,7 +7,7 @@ var App = React.createClass({
 
   getInitialState: function() {
     return {
-      isViewingTask: false
+      viewingTask: null
     };
   },
 
@@ -22,7 +22,7 @@ var App = React.createClass({
 
   render: function() {
     var taskViewer;
-    if (this.state.isViewingTask) {
+    if (this.state.viewingTask) {
       taskViewer =
         <TaskViewer
           task={TaskStore.viewingTask()} />
@@ -70,7 +70,7 @@ var App = React.createClass({
   },
 
   _onChange: function() {
-    this.setState({isViewingTask: !!TaskStore.viewingTask()});
+    this.setState({viewingTask: TaskStore.viewingTask()});
   }
 
 });

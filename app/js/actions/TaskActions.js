@@ -38,7 +38,6 @@ var TaskActions = {
   },
 
   save: function(id, name, description, estimate) {
-    debugger;
     AppDispatcher.dispatch({
       actionType: TaskConstants.TASK_SAVE,
       id: id,
