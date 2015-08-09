@@ -1,12 +1,12 @@
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var AppConstants = require('../constants/AppConstants');
 
-var OrgModel = require('../models/OrgModel');
-var UserModel = require('../models/UserModel');
-var UsersCollection = require('../models/UsersCollection');
-var ProjectModel = require('../models/ProjectModel');
-var ProjectsCollection = require('../models/ProjectsCollection');
-var TaskModel = require('../models/TaskModel');
+var OrgModel = require('../models/Orgs').Model;
+var UserModel = require('../models/Users').Model;
+var UsersCollection = require('../models/Users').Collection;
+var ProjectModel = require('../models/Projects').Model;
+var ProjectsCollection = require('../models/Projects').Collection;
+var TaskModel = require('../models/Tasks').Model;
 
 var AppActions = {
 
