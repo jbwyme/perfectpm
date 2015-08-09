@@ -1,22 +1,29 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
 var TaskList = require('./TaskList.react');
+var AppActions = require('../actions/AppActions');
 var AppStore = require('../stores/AppStore');
 
-function getTaskState(projectId) {
+function getTaskState() {
+  var project = AppStore.getSelectedProject();
+  var tasks = null;
+  if (project) {
+      tasks = project.get('tasks');
+  }
   return {
-    tasks: AppStore.getProjects().get(projectId).get('tasks');
+    tasks: tasks
   };
 }
 
 var ProjectDetails = React.createClass({
 
   getInitialState: function() {
-    return getTaskState(this.props.id);
+    return getTaskState();
   },
 
   componentDidMount: function() {
     AppStore.addChangeListener(this._onChange);
+    AppActions.showProject(this.props.id);
   },
 
   componentWillUnmount: function() {
@@ -24,16 +31,21 @@ var ProjectDetails = React.createClass({
   },
 
   render: function() {
-	return (
-    <div>
-      <h1>Projects</h1>
-      <TaskList tasks={this.state.tasks} />
+    var tasks = "loading..."
+    if (this.state.tasks) {
+      tasks = <TaskList tasks={this.state.tasks} />
+    }
+
+    return (
+      <div>
+      <h1>Tasks for project</h1>
+      {tasks}
       </div>
     );
   },
 
   _onChange: function() {
-    this.setState(getTaskState(this.props.id));
+    this.setState(getTaskState());
   }
 });
 

@@ -8,7 +8,10 @@ var CHANGE_EVENT = 'change';
 var _loggedInUser,
     _projectsInOrg,
     _usersInOrg,
-    _selectedTask;
+    _selectedProject,
+    _selectedUser,
+    _selectedTask,
+    _currentTaskCollection;
 
 var AppStore = assign({}, EventEmitter.prototype, {
 
@@ -30,6 +33,14 @@ var AppStore = assign({}, EventEmitter.prototype, {
 
   getSelectedTask: function() { 
     return _selectedTask;
+  },
+
+  getSelectedProject: function() { 
+    return _selectedProject;
+  },
+
+  getSelectedUser: function() { 
+    return _selectedUser;
   },
 
   emitChange: function() {
@@ -57,6 +68,18 @@ AppDispatcher.register(function(action) {
       _projectsInOrg = action.projects;
       AppStore.emitChange();
       break;
+    case AppConstants.SHOW_PROJECT: 
+      _selectedUser = null;
+      _selectedProject = action.project;
+      _currentTaskCollection = _selectedProject.get('tasks');
+      AppStore.emitChange();
+      break;
+    case AppConstants.SHOW_USER: 
+      _selectedUser = action.user;
+      _selectedProject = null;
+      _currentTaskCollection = _selectedUser.get('tasks');
+      AppStore.emitChange();
+      break;
     case AppConstants.VIEW_TASK: 
       _selectedTask = action.task;
       AppStore.emitChange();
@@ -66,7 +89,7 @@ AppDispatcher.register(function(action) {
       AppStore.emitChange();
       break;
     case AppConstants.ADD_TASK: 
-      _tasks.add(action.task);
+      _currentTaskCollection.add(action.task);
       AppStore.emitChange();
       break;
     case AppConstants.TASK_SAVED: 

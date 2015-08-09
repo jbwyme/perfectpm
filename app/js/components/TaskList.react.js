@@ -1,7 +1,7 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
 var TaskItem = require('./TaskItem.react');
-var TaskStore = require('../stores/TaskStore');
+var AppStore = require('../stores/AppStore');
 
 var TaskList = React.createClass({
 
@@ -10,17 +10,17 @@ var TaskList = React.createClass({
   	},
 
   	componentDidMount: function() {
-    	TaskStore.addChangeListener(this._onChange);
+    	AppStore.addChangeListener(this._onChange);
 
-		$('.task-list').sortable({
-			handle: ".handle",
-			placeholder: "sortable-placeholder",
-			opacity: 0.5,
-		});
+  		$('.task-list').sortable({
+  			handle: ".handle",
+  			placeholder: "sortable-placeholder",
+  			opacity: 0.5,
+  		});
   	},
 
   	componentWillUnmount: function() {
-    	TaskStore.removeChangeListener(this._onChange);
+    	AppStore.removeChangeListener(this._onChange);
   	},
 
   	render: function() {

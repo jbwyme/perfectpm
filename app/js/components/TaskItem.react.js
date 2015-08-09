@@ -39,7 +39,7 @@ var TaskItem = React.createClass({
         <i className="handle fa fa-bars"></i>
         <input type="checkbox" />
         <textarea className="task-input" rows="1" 
-          onKeyPress={this._onInputKeyPress} onKeyUp={this._onInputKeyUp} autoFocus={autoFocus} defaultValue={task.get('name')}
+          onKeyPress={this._onInputKeyPress} onKeyUp={this._onInputKeyUp} defaultValue={task.get('name')}
           onFocus={this._onInputFocus} onBlur={this._onInputBlur} />
       </li>
     );

@@ -1,11 +1,17 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
 var TaskList = require('./TaskList.react');
-var TaskStore = require('../stores/TaskStore');
+var AppActions = require('../actions/AppActions');
+var AppStore = require('../stores/AppStore');
 
 function getTaskState(userId) {
+  var user = AppStore.getSelectedUser();
+  var tasks = null;
+  if (user) {
+      tasks = user.get('tasks');
+  }
   return {
-    tasks: TaskStore.tasksForUser(userId)
+    tasks: tasks
   };
 }
 
@@ -16,19 +22,25 @@ var UserOverview = React.createClass({
   },
 
   componentDidMount: function() {
-    TaskStore.addChangeListener(this._onChange);
+    AppStore.addChangeListener(this._onChange);
+    AppActions.showUser(this.props.id);
   },
 
   componentWillUnmount: function() {
-    TaskStore.removeChangeListener(this._onChange);
+    AppStore.removeChangeListener(this._onChange);
   },
 
   render: function() {
-	return (
-    <div>
-      <h1>User overview</h1>
-      <TaskList tasks={this.state.tasks} />
-    </div>
+	 var tasks = "loading..."
+    if (this.state.tasks) {
+      tasks = <TaskList tasks={this.state.tasks} />
+    }
+
+    return (
+      <div>
+      <h1>User tasks</h1>
+      {tasks}
+      </div>
     );
   },
 
