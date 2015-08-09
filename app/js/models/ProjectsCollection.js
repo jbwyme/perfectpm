@@ -1,6 +1,10 @@
 var ProjectsCollection = Backbone.Collection.extend({
-	url: '/api/projects',
-	model: require('./ProjectModel')
+	url: function() {
+		return "/api/orgs/" + this.orgId + "/projects";
+	},
+
+	model: require('./ProjectModel'),
+
 });
 
 module.exports = ProjectsCollection;

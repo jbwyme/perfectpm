@@ -1,7 +1,15 @@
+var TasksCollection = require('./TasksCollection');
+var OrgsCollection = require('./OrgsCollection');
 var UserModel = Backbone.Model.extend({
-	url: '/api/users',
+	urlRoot: '/api/users',
 	getName: function() {
-		return this.get("firstName") + " " + this.get("lastName");
+		return this.get("first_name") + " " + this.get("last_name");
+	},
+
+	parse: function(user) {
+		user.tasks = new TasksCollection(user.tasks);
+		user.orgs = new OrgsCollection(user.orgs);
+		return user;
 	}
 });
 

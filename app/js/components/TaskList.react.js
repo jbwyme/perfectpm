@@ -1,19 +1,53 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
 var TaskItem = require('./TaskItem.react');
+var TaskStore = require('../stores/TaskStore');
 
 var TaskList = React.createClass({
-  render: function() {
 
-    var tasks = [];
-    this.props.tasks.each(function(taskModel) {
-      tasks.push(<TaskItem key={taskModel.cid} task={taskModel} />);
-    });
+	getInitialState: function() {
+    	return this._getState();
+  	},
 
-    return (
-      <ul className="task-list">{tasks}</ul>
-    );
-  },
+  	componentDidMount: function() {
+    	TaskStore.addChangeListener(this._onChange);
+
+		$('.task-list').sortable({
+			handle: ".handle",
+			placeholder: "sortable-placeholder",
+			opacity: 0.5,
+		});
+  	},
+
+  	componentWillUnmount: function() {
+    	TaskStore.removeChangeListener(this._onChange);
+  	},
+
+  	render: function() {
+
+	    var tasks = [];
+      if (this.props.tasks) {
+  	    this.props.tasks.each(function(taskModel) {
+  	      	tasks.push(<TaskItem key={taskModel.cid} task={taskModel} />);
+  	    });
+      }
+
+	    return (
+	      	<ul className="task-list">{tasks}</ul>
+	    );
+  	},
+
+  	_onChange: function() {
+  		return this._getState();
+  	},
+
+  	_getState: function() {
+  		return {
+  			numTasks: !this.props.task ? 0 : this.props.tasks.size()
+  		}
+  	}
+
+
 });
 
 module.exports = TaskList;

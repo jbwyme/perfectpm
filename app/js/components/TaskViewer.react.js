@@ -1,6 +1,8 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
-var TaskActions = require('../actions/TaskActions');
+var AppActions = require('../actions/AppActions');
+var AppStore = require('../stores/AppStore');
+var TaskModel = require('../models/TaskModel');
 
 var TaskViewer = React.createClass({
 
@@ -8,7 +10,20 @@ var TaskViewer = React.createClass({
    task: ReactPropTypes.object.isRequired
   },
 
+  getInitialState: function() {
+    return this._getState();
+  },
+
+  componentDidMount: function() {
+    AppStore.addChangeListener(this._onChange);
+  },
+
+  componentWillUnmount: function() {
+    AppStore.removeChangeListener(this._onChange);
+  },
+
   render: function() {
+    debugger;
     var task = this.props.task;
     return (
       <div className="task-viewer">
@@ -31,18 +46,28 @@ var TaskViewer = React.createClass({
     );
   },
 
+  _getState: function() {
+    return {
+      taskId: this.props.task.cid
+    }
+  },
+
+  _onChange: function() {
+    this.setState(this._getState);
+  },
+
   _save: function() {
-    // probably not the right way to be doing this
-    TaskActions.save(
-      this.refs.id.getDOMNode().value, 
-      this.refs.name.getDOMNode().value, 
-      this.refs.description.getDOMNode().value, 
-      this.refs.estimate.getDOMNode().value
-    );
+    var task = new TaskModel({
+      id: this.refs.id.getDOMNode().value, 
+      name: this.refs.name.getDOMNode().value, 
+      description: this.refs.description.getDOMNode().value, 
+      estimate: this.refs.estimate.getDOMNode().value
+    });
+    AppActions.saveTask(task);
   },
 
   _cancel: function() {
-    TaskActions.cancel();
+    AppActions.exitTask();
   }
 
 });

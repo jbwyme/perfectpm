@@ -1,11 +1,11 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
 var TaskList = require('./TaskList.react');
-var TaskStore = require('../stores/TaskStore');
+var AppStore = require('../stores/AppStore');
 
 function getTaskState(projectId) {
   return {
-    tasks: TaskStore.tasksForProject(projectId)
+    tasks: AppStore.getProjects().get(projectId).get('tasks');
   };
 }
 
@@ -16,11 +16,11 @@ var ProjectDetails = React.createClass({
   },
 
   componentDidMount: function() {
-    TaskStore.addChangeListener(this._onChange);
+    AppStore.addChangeListener(this._onChange);
   },
 
   componentWillUnmount: function() {
-    TaskStore.removeChangeListener(this._onChange);
+    AppStore.removeChangeListener(this._onChange);
   },
 
   render: function() {

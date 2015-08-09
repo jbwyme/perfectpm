@@ -14,6 +14,7 @@ _tasks.fetch().done(function() {
 })
 
 var _viewingTask;
+var _taskIsFocused = false;
 var _quickAddOpen = false;
 
 var TaskStore = assign({}, EventEmitter.prototype, {
@@ -27,11 +28,26 @@ var TaskStore = assign({}, EventEmitter.prototype, {
   },
 
   tasksForProject: function(id) {
-    return new TasksCollection(_tasks.slice(0, 3));
+    return _tasks; //new TasksCollection(_tasks.slice(0, 3));
   },
 
   viewingTask: function() {
     return _viewingTask;
+  },
+
+  taskIsFocused: function() {
+    return _taskIsFocused;
+  },
+
+  setName: function(name) {
+    _viewingTask.set('name', name);
+    _viewingTask.save().done(_.bind(function() {
+      this.emitChange();
+    }, this))
+  },
+
+  editingTask: function() {
+    return _editingTask;
   },
 
   quickAddOpen: function() { 
@@ -63,8 +79,20 @@ AppDispatcher.register(function(action) {
   switch(action.actionType) {
 
     case TaskConstants.TASK_VIEW:
+      debugger;
       _viewingTask = _tasks.get(action.id);
       TaskStore.emitChange();
+      break;
+
+    case TaskConstants.NEW_TASK:
+      var task = new TaskModel();
+      task.set('priority', action.priority);
+      _tasks.add(task);
+      task.save().done(function() {
+        _viewingTask = task;
+        _taskIsFocused = true;
+        TaskStore.emitChange();
+      });
       break;
 
     case TaskConstants.TASK_SAVE:

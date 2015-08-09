@@ -21,7 +21,7 @@
 	.middle {
 
 		.nav {
-			width: 250px;
+			min-width: 250px;
 			border-right: 1px solid @secondary;
 			display: table-cell;
 			vertical-align:top;
@@ -91,9 +91,53 @@
 		.body {
 			display: table-cell;
 			padding: 10px;
+			width: 100%;
 
 			.task-list {
 				list-style-type: none;
+				width: 100%;
+
+				li {
+					position: relative;
+					&.selected {
+						background-color: @button-highlight;
+					}
+					&:hover {
+						background-color: #eee;
+					}
+
+					.handle {
+						color: #ccc;
+						cursor: move;
+
+						&:hover {
+							color: #333;
+						}
+					}
+
+					.task-input {
+					  color: #212F40;
+					  width: 100%;
+					  background: transparent;
+					  border: 0px solid transparent;
+					  outline: 0px solid transparent;
+					  position: absolute;
+					  padding: 0px 0px 0px 0px;
+					  left: 30px;
+					  top: -1px;
+					  line-height: 1.4;
+					  overflow: hidden;
+					  resize: none;
+					}
+				}
+
+				.sortable-placeholder {
+					background-color: #ccc;
+					height: 1px;
+					margin-top: 10px;
+					margin-bottom: 10px;
+					width: 100%;
+				}
 			}
 
 			.task-viewer {

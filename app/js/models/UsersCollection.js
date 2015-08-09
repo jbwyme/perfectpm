@@ -1,5 +1,8 @@
 var UsersCollection = Backbone.Collection.extend({
-	url: '/api/users',
+	url: function() {
+		return "/api/orgs/" + this.orgId + "/users";
+	},
+
 	model: require('./UserModel')
 });
 

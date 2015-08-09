@@ -21,6 +21,14 @@ var ProjectStore = assign({}, EventEmitter.prototype, {
     return _projects;
   },
 
+  getProject: function(id) {
+    var project = new ProjectModel({id: id});
+    project.fetch().done(_.bind(function() {
+      this.emitChange();
+    }, this));
+    return project;
+  },
+
   quickAddOpen: function() { 
     return _quickAddOpen;
   },
@@ -44,7 +52,13 @@ AppDispatcher.register(function(action) {
   switch(action.actionType) {
 
     case ProjectConstants.PROJECT_SAVE:
-      (new ProjectModel(action)).save();
+
+      var project = new ProjectModel(action);
+      project.set('createdByUserId', 1);
+      project.set('description', project.get('name'));
+      project.set('orgId', 1);
+
+      project.save();
       _projects.fetch();
       ProjectStore.emitChange();
       break;
