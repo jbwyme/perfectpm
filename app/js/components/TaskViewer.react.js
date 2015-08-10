@@ -2,7 +2,7 @@ var React = require('react');
 var ReactPropTypes = React.PropTypes;
 var AppActions = require('../actions/AppActions');
 var AppStore = require('../stores/AppStore');
-var TaskModel = require('../models/TaskModel');
+var TaskModel = require('../models/Tasks').Model;
 
 var TaskViewer = React.createClass({
 
@@ -15,55 +15,71 @@ var TaskViewer = React.createClass({
   },
 
   componentDidMount: function() {
-    AppStore.addChangeListener(this._onChange);
+    AppStore.addChangeListener(this._onAppStoreChange);
   },
 
   componentWillUnmount: function() {
-    AppStore.removeChangeListener(this._onChange);
+    AppStore.removeChangeListener(this._onAppStoreChange);
   },
 
   render: function() {
-    debugger;
     var task = this.props.task;
+
     return (
       <div className="task-viewer">
         <input type="hidden" ref="id" value={task.id} />
         <div>
           <label htmlFor="task-name-input">Name:</label>
-          <input ref="name" id="task-name-input" type="text" defaultValue={task.get('name')} />
+          <input ref="name" id="task-name-input" type="text" value={this.state.name} onChange={this._nameChanged} />
         </div>
         <div>
           <label htmlFor="task-description-input">Description:</label>
-          <textarea ref="description" defaultValue={task.get('description')} />
+          <textarea ref="description" value={this.state.description} onChange={this._descriptionChanged} />
         </div>
          <div>
           <label htmlFor="task-effort-input">Effort:</label>
-          <input ref="estimate" type="text" defaultValue={task.get('estimate')} /> days
+          <input ref="estimate" type="text" value={this.state.estimate} onChange={this._estimateChanged} /> days
         </div>
         <button onClick={this._save}>Save</button>
-        <button onClick={this._cancel}>Cancel</button>
+        <button onClick={this._cancel}>Close</button>
       </div>
     );
   },
 
+  _nameChanged: function(e) {
+    this.setState({name: e.target.value});
+  },
+
+  _descriptionChanged: function(e) {
+    this.setState({description: e.target.value});
+  },
+
+  _estimateChanged: function(e) {
+    this.setState({estimate: e.target.value});
+  },
+
   _getState: function() {
+    var task = this.props.task;
     return {
-      taskId: this.props.task.cid
+      taskId: task.get('id'),
+      name: task.get('name'),
+      description: task.get('description'),
+      estimate: task.get('estimate')
     }
   },
 
-  _onChange: function() {
+  _onAppStoreChange: function() {
     this.setState(this._getState);
   },
 
   _save: function() {
-    var task = new TaskModel({
-      id: this.refs.id.getDOMNode().value, 
-      name: this.refs.name.getDOMNode().value, 
-      description: this.refs.description.getDOMNode().value, 
-      estimate: this.refs.estimate.getDOMNode().value
+    this.props.task.set({
+      id: this.state.taskId, 
+      name: this.state.name,
+      description: this.state.description,
+      estimate: this.state.estimate
     });
-    AppActions.saveTask(task);
+    AppActions.saveTask(this.props.task);
   },
 
   _cancel: function() {

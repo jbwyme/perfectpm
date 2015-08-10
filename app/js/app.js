@@ -23,12 +23,7 @@ var AppRouter = Backbone.Router.extend({
     	"user/:id" : function(id) {
     		var UserOverview = require('./components/UserOverview.react');
     		renderApp(<UserOverview id={id}/>);
-    	},
-
-    	"team/:id" : function(id) {
-    		var TeamOverview = require('./components/TeamOverview.react');
-    		renderApp(<TeamOverview id={id}/>);
-    	},
+    	}
 
     }
 });
@@ -39,3 +34,4 @@ var router = new AppRouter;
 // Start Backbone history a necessary step for bookmarkable URL's
 Backbone.history.start();
 
+module.exports = {router: router};

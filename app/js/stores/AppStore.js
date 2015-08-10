@@ -5,13 +5,14 @@ var EventEmitter = require('events').EventEmitter;
 
 var CHANGE_EVENT = 'change';
 
-var _loggedInUser,
+var _selectedOrg,
+    _loggedInUser,
     _projectsInOrg,
     _usersInOrg,
     _selectedProject,
     _selectedUser,
     _selectedTask,
-    _currentTaskCollection;
+    _taskList
 
 var AppStore = assign({}, EventEmitter.prototype, {
 
@@ -31,6 +32,10 @@ var AppStore = assign({}, EventEmitter.prototype, {
     return _tasks;
   },
 
+  getSelectedOrg: function() { 
+    return _selectedOrg;
+  },
+
   getSelectedTask: function() { 
     return _selectedTask;
   },
@@ -41,6 +46,10 @@ var AppStore = assign({}, EventEmitter.prototype, {
 
   getSelectedUser: function() { 
     return _selectedUser;
+  },
+
+  getTaskList: function() {
+    return _taskList;
   },
 
   emitChange: function() {
@@ -61,9 +70,12 @@ AppDispatcher.register(function(action) {
   switch(action.actionType) {
     case AppConstants.LOGGED_IN: 
       _loggedInUser = action.user;
+      _selectedUser = _loggedInUser;
+      _currentTaskCollection = _loggedInUser.get('tasks');
       AppStore.emitChange();
       break;
     case AppConstants.SHOW_ORG: 
+      _selectedOrg = action.org;
       _usersInOrg = action.users;
       _projectsInOrg = action.projects;
       AppStore.emitChange();
@@ -71,13 +83,13 @@ AppDispatcher.register(function(action) {
     case AppConstants.SHOW_PROJECT: 
       _selectedUser = null;
       _selectedProject = action.project;
-      _currentTaskCollection = _selectedProject.get('tasks');
+      _taskList = action.taskList;
       AppStore.emitChange();
       break;
     case AppConstants.SHOW_USER: 
       _selectedUser = action.user;
       _selectedProject = null;
-      _currentTaskCollection = _selectedUser.get('tasks');
+      _taskList = action.taskList;
       AppStore.emitChange();
       break;
     case AppConstants.VIEW_TASK: 
@@ -89,7 +101,8 @@ AppDispatcher.register(function(action) {
       AppStore.emitChange();
       break;
     case AppConstants.ADD_TASK: 
-      _currentTaskCollection.add(action.task);
+      _taskList.get('tasks').add(action.task);
+      _selectedTask = action.task;
       AppStore.emitChange();
       break;
     case AppConstants.TASK_SAVED: 

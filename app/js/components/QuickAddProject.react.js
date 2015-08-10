@@ -1,8 +1,6 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
 
-var ProjectActions = require('../actions/ProjectActions');
-
 var QuickAddProject = React.createClass({
 
   render: function() {
@@ -25,8 +23,6 @@ var QuickAddProject = React.createClass({
   },
 
   _save: function() {
-      ProjectActions.save(null, this.refs.name.getDOMNode().value);
-      ProjectActions.quickAddClose();
   }
 
 });

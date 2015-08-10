@@ -1,14 +1,13 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
 var TaskList = require('./TaskList.react');
+var AppActions = require('../actions/AppActions');
 var AppStore = require('../stores/AppStore');
 
 function getTaskState() {
   return {
-    tasks: AppStore.getLoggedInUser().get('tasks')
   };
 }
-
 
 var MyTasks = React.createClass({
 
@@ -18,6 +17,7 @@ var MyTasks = React.createClass({
 
   componentDidMount: function() {
     AppStore.addChangeListener(this._onChange);
+    AppActions.showUser(AppStore.getLoggedInUser().id, AppStore.getSelectedOrg().id);
   },
 
   componentWillUnmount: function() {
@@ -26,7 +26,10 @@ var MyTasks = React.createClass({
 
   render: function() {
     return (
-      <TaskList tasks={this.state.tasks} />
+      <div>
+      <h1>My tasks</h1>
+      <TaskList />
+      </div>
     );
   },
 

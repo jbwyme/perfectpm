@@ -3,7 +3,6 @@ var AppActions = require('../actions/AppActions');
 var AppStore = require('../stores/AppStore');
 var TaskViewer = require('./TaskViewer.react');
 var QuickAddProject = require('./QuickAddProject.react');
-var QuickAddTask = require('./QuickAddTask.react');
 var QuickAddUser = require('./QuickAddUser.react');
 
 var App = React.createClass({
@@ -22,7 +21,7 @@ var App = React.createClass({
   },
 
   render: function() {
-    if (AppStore.getLoggedInUser()) {
+    if (AppStore.getLoggedInUser() && AppStore.getSelectedOrg()) {
       var taskViewer;
       if (this.state.selectedTask) {
         taskViewer =

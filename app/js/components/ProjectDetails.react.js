@@ -5,14 +5,7 @@ var AppActions = require('../actions/AppActions');
 var AppStore = require('../stores/AppStore');
 
 function getTaskState() {
-  var project = AppStore.getSelectedProject();
-  var tasks = null;
-  if (project) {
-      tasks = project.get('tasks');
-  }
-  return {
-    tasks: tasks
-  };
+  return {};
 }
 
 var ProjectDetails = React.createClass({
@@ -31,15 +24,10 @@ var ProjectDetails = React.createClass({
   },
 
   render: function() {
-    var tasks = "loading..."
-    if (this.state.tasks) {
-      tasks = <TaskList tasks={this.state.tasks} />
-    }
-
     return (
       <div>
       <h1>Tasks for project</h1>
-      {tasks}
+      <TaskList />
       </div>
     );
   },

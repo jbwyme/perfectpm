@@ -4,26 +4,19 @@ var TaskList = require('./TaskList.react');
 var AppActions = require('../actions/AppActions');
 var AppStore = require('../stores/AppStore');
 
-function getTaskState(userId) {
-  var user = AppStore.getSelectedUser();
-  var tasks = null;
-  if (user) {
-      tasks = user.get('tasks');
-  }
-  return {
-    tasks: tasks
-  };
+function getTaskState() {
+  return {};
 }
 
 var UserOverview = React.createClass({
 
   getInitialState: function() {
-    return getTaskState(this.props.id);
+    return getTaskState();
   },
 
   componentDidMount: function() {
     AppStore.addChangeListener(this._onChange);
-    AppActions.showUser(this.props.id);
+    AppActions.showUser(this.props.id, AppStore.getSelectedOrg().id);
   },
 
   componentWillUnmount: function() {
@@ -31,21 +24,16 @@ var UserOverview = React.createClass({
   },
 
   render: function() {
-	 var tasks = "loading..."
-    if (this.state.tasks) {
-      tasks = <TaskList tasks={this.state.tasks} />
-    }
-
     return (
       <div>
       <h1>User tasks</h1>
-      {tasks}
+      <TaskList />
       </div>
     );
   },
 
   _onChange: function() {
-    this.setState(getTaskState(this.props.id));
+    this.setState(getTaskState());
   }
 });
 

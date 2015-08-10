@@ -7,6 +7,8 @@ var UsersCollection = require('../models/Users').Collection;
 var ProjectModel = require('../models/Projects').Model;
 var ProjectsCollection = require('../models/Projects').Collection;
 var TaskModel = require('../models/Tasks').Model;
+var TasksCollection = require('../models/Tasks').Collection;
+var TaskList = require('../models/Tasks').TaskList;
 
 var AppActions = {
 
@@ -40,12 +42,18 @@ var AppActions = {
     });
   },
 
-  showUser: function(id) {
-    var user = new UserModel({id: id});
-    user.fetch().done(function() {
-      AppDispatcher.dispatch({
-        actionType: AppConstants.SHOW_USER,
-        user: user
+  showUser: function(userId, orgId) {
+    var user = new UserModel({id: userId});
+    var $userFetch = user.fetch();
+    var $taskListIdFetch = user.getTaskListId(orgId);
+    $.when($userFetch, $taskListIdFetch).done(function(user, taskListId) {
+      var taskList = new TaskList({id: taskListId});
+      taskList.fetch().done(function() {
+        AppDispatcher.dispatch({
+          actionType: AppConstants.SHOW_USER,
+          user: user,
+          taskList: taskList
+        });
       });
     });
   },
@@ -53,9 +61,13 @@ var AppActions = {
   showProject: function(id) {
     var project = new ProjectModel({id: id});
     project.fetch().done(function() {
-      AppDispatcher.dispatch({
-        actionType: AppConstants.SHOW_PROJECT,
-        project: project
+      var taskList = new TaskList({id: project.get('task_list_id')});
+      taskList.fetch().done(function() {
+        AppDispatcher.dispatch({
+          actionType: AppConstants.SHOW_PROJECT,
+          project: project,
+          taskList: taskList
+        });
       });
     });
   },
@@ -69,6 +81,13 @@ var AppActions = {
     });
   },
 
+  viewTask: function(task) {
+    AppDispatcher.dispatch({
+      actionType: AppConstants.VIEW_TASK,
+      task: task
+    });
+  },
+
   saveTask: function(task) {
     task.save().done(function() {
        AppDispatcher.dispatch({
@@ -78,20 +97,15 @@ var AppActions = {
     });
   },
 
-  changeTaskPriority: function(id, from, to) {
-    alert('priority changed');
-
-    AppDispatcher.dispatch({
-      actionType: AppConstants.TASK_PRIORITY_CHANGED,
-      id: id
-    });
-  },
-
-  viewTask: function(task) {
-    AppDispatcher.dispatch({
-      actionType: AppConstants.VIEW_TASK,
-      task: task
-    });
+  changeTaskPriority: function(taskList, taskId, priority) {
+    taskList.updatePriority(taskId, priority).done(function() {
+      AppDispatcher.dispatch({
+        actionType: AppConstants.TASK_PRIORITY_CHANGED,
+        taskList: taskList,
+        taskId: taskId,
+        priority: priority 
+      });
+    })
   },
 
   exitTask: function() {
@@ -100,12 +114,17 @@ var AppActions = {
     });
   },
 
-  newTask: function(priority) {
+  newTask: function(taskList, priority) {
     var task = new TaskModel({priority: priority});
+    var $save = task.save();
     AppDispatcher.dispatch({
       actionType: AppConstants.ADD_TASK,
       task: task
     });
+    $save.done(function(res) {
+      task.set('id', res.insertId);
+      taskList.addTask(task.id, priority);
+    });    
   },
 
 };

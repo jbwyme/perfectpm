@@ -8,6 +8,10 @@ var ProjectModel = Backbone.Model.extend({
 	}
 });
 
+ProjectModel.assignTask = function(projectId, taskId) {
+	return $.postJSON('/api/projects/' + projectId + '/tasks/' + taskId);
+}
+
 var ProjectsCollection = Backbone.Collection.extend({
 	url: function() {
 		return "/api/orgs/" + this.orgId + "/projects";

@@ -10,6 +10,18 @@ var UserModel = Backbone.Model.extend({
 		user.tasks = new TasksCollection(user.tasks);
 		user.orgs = new OrgsCollection(user.orgs);
 		return user;
+	},
+
+	getTaskListId: function(orgId) {
+		$dfr = $.Deferred();
+		$.getJSON('/api/orgs/' + orgId + '/users/' + this.id)
+		.fail(function(jqXHR, textStatus, errorThrown) {
+			throw("Failed to fetch org user for org id " + orgId + " and user id " + this.id);
+		})
+		.done(function(orgUser) {
+			$dfr.resolve(orgUser.task_list_id);
+		});
+		return $dfr;
 	}
 });
 

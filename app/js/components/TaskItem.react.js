@@ -35,10 +35,10 @@ var TaskItem = React.createClass({
     }
     return (
       <li
-        key={task.cid} data-id={task.cid} onClick={this._onClick} className={selected}>
+        key={task.cid} data-id={task.id} onClick={this._onClick} className={selected}>
         <i className="handle fa fa-bars"></i>
         <input type="checkbox" />
-        <textarea className="task-input" rows="1" 
+        <textarea className="task-input" rows="1" autoFocus={autoFocus}
           onKeyPress={this._onInputKeyPress} onKeyUp={this._onInputKeyUp} defaultValue={task.get('name')}
           onFocus={this._onInputFocus} onBlur={this._onInputBlur} />
       </li>
@@ -61,13 +61,15 @@ var TaskItem = React.createClass({
   },
 
   _onInputKeyUp: function(e) {
-    this.props.task.set('name', $(e.target).val());
-    AppActions.saveTask(this.props.task);
+    if (e.which !== 13) {
+      this.props.task.set('name', $(e.target).val());
+      AppActions.saveTask(this.props.task);
+    }
   },
 
   _onInputKeyPress: function(e) {
     if (e.which === 13) {
-      AppActions.newTask(this.props.task.get('priority') + 1);
+      AppActions.newTask(AppStore.getTaskList(), this.props.task.get('priority') + 1);
       e.preventDefault();
     }
   },
@@ -79,7 +81,7 @@ var TaskItem = React.createClass({
   _buildState: function() {
     return {
       viewingTask: AppStore.getSelectedTask(),
-      taskIsFocused: false
+      taskIsFocused: true
     }
   },
 
