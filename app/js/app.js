@@ -26,7 +26,7 @@ var AppRouter = Backbone.Router.extend({
     	}
 
     }
-});
+}); 
 
 // Initiate the router
 var router = new AppRouter;

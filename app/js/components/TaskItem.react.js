@@ -23,7 +23,6 @@ var TaskItem = React.createClass({
   },
 
   render: function() {
-    var key = this.props.key;
     var task = this.props.task;
     var selected;
     var autoFocus = "false";
@@ -35,12 +34,12 @@ var TaskItem = React.createClass({
     }
     return (
       <li
-        key={task.cid} data-id={task.id} onClick={this._onClick} className={selected}>
+        key={task.id} data-id={task.id} onClick={this._onClick} className={selected}>
         <i className="handle fa fa-bars"></i>
         <input type="checkbox" />
         <textarea className="task-input" rows="1" autoFocus={autoFocus}
           onKeyPress={this._onInputKeyPress} onKeyUp={this._onInputKeyUp} defaultValue={task.get('name')}
-          onFocus={this._onInputFocus} onBlur={this._onInputBlur} />
+          onFocus={this._onInputFocus} />
       </li>
     );
   },
@@ -54,10 +53,6 @@ var TaskItem = React.createClass({
     if (this.props.task.get('name') === "Untitled") {
       $(e.target).select();
     }
-  },
-
-  _onInputBlur: function(e) {
-    // AppActions.setName($(e.target).val());
   },
 
   _onInputKeyUp: function(e) {
