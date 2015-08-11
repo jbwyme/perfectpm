@@ -20,6 +20,7 @@
   "homepage": "https://github.com/jbwyme/perfectpm#readme",
   "dependencies": {
     "backbone": "1.2.1",
+    "bluebird": "2.9.34",
     "body-parser": "^1.13.3",
     "ejs": "^2.3.3",
     "express": "^4.13.2",
