@@ -10,7 +10,7 @@ var backendRequest = request.defaults({baseUrl: "http://localhost:3333"});
 app.set('views', __dirname);
 app.set('view engine', 'ejs');
 
-app.use(bodyParser.json());       // to support JSON-encoded bodies
+app.use(bodyParser.json()); // to support JSON-encoded bodies
 app.use(express.static(path.join(__dirname)));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -18,15 +18,35 @@ app.get('/', function (req, res) {
     res.render('layout');
 });
 
-app.get('/api/tasks', function (req, res) {
+app.post('/api/register', function(req, res) {
+    backendRequest.post('/register', {json: req.body}, function(err, response, body) {
+        if (!err && response.statusCode == 200) {
+            res.send(body);
+        } else {
+            res.send(err)
+        }
+    });
+});
+
+app.get('/api/login/:email', function(req, res) {
+    backendRequest.get('/auth/' + req.params.email, {}, function(err, response, body) {
+        if (!err && response.statusCode == 200) {
+            res.send(body);
+        } else {
+            res.send(err)
+        }
+    });
+});
+
+app.get('/api/tasks', function(req, res) {
     backendRequest.get(
         '/tasks',
         {},
-        function (error, response, body) {
-            if (!error && response.statusCode == 200) {
+        function (err, response, body) {
+            if (!err && response.statusCode == 200) {
                 res.send(body);
             } else {
-                res.send(error)
+                res.send(err)
             }
         }
     );

@@ -1,4 +1,5 @@
 var assign = require('object-assign');
+var cookie = require('../cookie');
 var AppConstants = require('../constants/AppConstants');
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var EventEmitter = require('events').EventEmitter;
@@ -81,7 +82,13 @@ AppDispatcher.register(function(action) {
         case AppConstants.LOGGED_IN:
             _loggedInUser = action.user;
             _selectedUser = _loggedInUser;
-            _currentTaskCollection = _loggedInUser.get('tasks');
+            cookie.set('user', _loggedInUser.get('email'), 1);
+            AppStore.emitChange();
+            break;
+        case AppConstants.LOGGED_OUT:
+            _loggedInUser = null;
+            _selectedUser = null;
+            cookie.delete('user');
             AppStore.emitChange();
             break;
         case AppConstants.SHOW_ORG:
@@ -141,12 +148,14 @@ AppDispatcher.register(function(action) {
             AppStore.emitChange();
             break;
         case AppConstants.HIDE_ADD_USER:
-            _quickAddUser = true;
+            _quickAddUser = false;
             AppStore.emitChange();
             break;
         default:
             // no op
     }
 });
+
+
 
 module.exports = AppStore;

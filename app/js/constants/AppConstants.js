@@ -2,6 +2,7 @@ var keyMirror = require('keymirror');
 
 module.exports = keyMirror({
     LOGGED_IN: null,
+    LOGGED_OUT: null,
     SHOW_ORG: null,
     SHOW_USER: null,
     SHOW_PROJECT: null,

@@ -1,6 +1,8 @@
 var React = require('react');
 var AppActions = require('../actions/AppActions');
 var AppStore = require('../stores/AppStore');
+var Login = require('./Login.react');
+var Signup = require('./Signup.react');
 var TaskViewer = require('./TaskViewer.react');
 var QuickAddProject = require('./QuickAddProject.react');
 var QuickAddUser = require('./QuickAddUser.react');
@@ -13,7 +15,6 @@ var App = React.createClass({
 
     componentDidMount: function() {
         AppStore.addChangeListener(this._onChange);
-        AppActions.login(1);
     },
 
     componentWillUnmount: function() {
@@ -21,6 +22,7 @@ var App = React.createClass({
     },
 
     render: function() {
+
         if (AppStore.getLoggedInUser() && AppStore.getSelectedOrg()) {
             var taskViewer;
             if (this.state.selectedTask) {
@@ -64,9 +66,10 @@ var App = React.createClass({
                         <div className="nav">
                             <ul>
                             <li className="section users-section">
-                                    Tasks
+                                    Dashboard
                                 </li>
                                 <li><a href="#">My tasks</a></li>
+                                <li><a href="#/logout">Logout</a></li>
 
                                 <li className="section users-section">
                                     Projects {addProjectBtn}
@@ -94,7 +97,14 @@ var App = React.createClass({
                 </div>
         	);
         } else {
-            return <div>logging in...</div>;
+            return <div>
+                <h1>Login</h1>
+                <Login />
+                <br />
+                <br />
+                <h1>Sign up</h1>
+                <Signup />
+            </div>
         }
     },
 
@@ -103,11 +113,19 @@ var App = React.createClass({
             selectedTask: AppStore.getSelectedTask(),
             projects: AppStore.getProjectsInOrg(),
             users: AppStore.getUsersInOrg(),
+            selectedUser: AppStore.getSelectedUser(),
+            selectedProject: AppStore.getSelectedProject(),
             quickAddProject: AppStore.getQuickAddProject(),
             quickAddUser: AppStore.getQuickAddUser()
         };
         if (state.selectedTask) {
             state.selectedTaskCid = state.selectedTask.cid;
+        }
+        if (state.selectedUser) {
+            state.selectedUserCid = state.selectedUser.cid;
+        }
+        if (state.selectedProject) {
+            state.selectedProjectCid = state.selectedProject.cid;
         }
         return state;
     },

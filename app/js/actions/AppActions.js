@@ -13,14 +13,54 @@ var TaskList = require('../models/Tasks').TaskList;
 
 var AppActions = {
 
-    login: function(userId) {
-        var user = new UserModel({id: userId});
-        user.fetch().done(function() {
-            AppDispatcher.dispatch({
-                actionType: AppConstants.LOGGED_IN,
-                user: user
+    register: function(orgName, firstName, lastName, email) {
+        $.ajax('/api/register', {
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                orgName: orgName,
+                firstName: firstName,
+                lastName: lastName,
+                email: email
+            })
+        })
+        .fail(function(resp) {
+           throw "Unabled to register: " + resp;
+        })
+        .done(function(userJson) {
+            var user = new UserModel(userJson);
+            user.fetch().done(function() {
+                AppDispatcher.dispatch({
+                    actionType: AppConstants.LOGGED_IN,
+                    user: user
+                });
+                AppActions.showOrg(user.get('orgs').at(0).id);
             });
-            AppActions.showOrg(user.get('orgs').at(0).id);
+        });
+    },
+
+    login: function(email) {
+        $.getJSON('/api/login/' + email)
+            .fail(function(jqXHR, errorText, errorThrown) {
+                alert("Failed to login: " + errorThrown);
+            })
+            .done(function(userJson) {
+                var user = new UserModel(userJson);
+                user.fetch().done(function() {
+                    AppDispatcher.dispatch({
+                        actionType: AppConstants.LOGGED_IN,
+                        user: user
+                    });
+
+
+                    AppActions.showOrg(user.get('orgs').at(0).id);
+                });
+            });
+    },
+
+    logout: function() {
+        AppDispatcher.dispatch({
+            actionType: AppConstants.LOGGED_OUT
         });
     },
 
@@ -39,22 +79,6 @@ var AppActions = {
                 org: org,
                 users: users,
                 projects: projects
-            });
-        });
-    },
-
-    showUser: function(userId, orgId) {
-        var user = new UserModel({id: userId});
-        var $userFetch = user.fetch();
-        var $taskListIdFetch = user.getTaskListId(orgId);
-        $.when($userFetch, $taskListIdFetch).done(function(user, taskListId) {
-            var taskList = new TaskList({id: taskListId});
-            taskList.fetch().done(function() {
-                AppDispatcher.dispatch({
-                    actionType: AppConstants.SHOW_USER,
-                    user: user,
-                    taskList: taskList
-                });
             });
         });
     },
@@ -180,8 +204,23 @@ var AppActions = {
         AppDispatcher.dispatch({
             actionType: AppConstants.HIDE_ADD_USER
         });
-    }
+    },
 
+    showUser: function(userId, orgId) {
+        var user = new UserModel({id: userId});
+        var $userFetch = user.fetch();
+        var $taskListIdFetch = user.getTaskListId(orgId);
+        $.when($userFetch, $taskListIdFetch).done(function(user, taskListId) {
+            var taskList = new TaskList({id: taskListId});
+            taskList.fetch().done(function() {
+                AppDispatcher.dispatch({
+                    actionType: AppConstants.SHOW_USER,
+                    user: user,
+                    taskList: taskList
+                });
+            });
+        });
+    }
 };
 
 module.exports = AppActions;
