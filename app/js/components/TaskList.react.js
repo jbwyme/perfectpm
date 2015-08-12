@@ -45,7 +45,7 @@ var TaskList = React.createClass({
 	},
 
 	_newTaskClick: function() {
-		AppActions.newTask(this.state.taskList, this.state.taskList.get('tasks').size());
+		AppActions.newTask(this.state.taskList, this.state.taskList.get('tasks').size() + 1);
 	},
 
 	_onAppStoreChange: function() {

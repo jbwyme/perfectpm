@@ -16,9 +16,6 @@ var AppRouter = Backbone.Router.extend({
 			var MyTasks = require('./components/MyTasks.react');
 			renderApp(<MyTasks />);
 
-			if (cookie.get('user')) {
-				AppActions.login(cookie.get('user'));
-			}
     	},
 
 		"logout": function() {
@@ -41,7 +38,11 @@ var AppRouter = Backbone.Router.extend({
 
 // Initiate the router
 var router = new AppRouter;
-
+router.on('route', function() {
+	if (cookie.get('user')) {
+		AppActions.login(cookie.get('user'));
+	}
+});
 // Start Backbone history a necessary step for bookmarkable URL's
 Backbone.history.start();
 

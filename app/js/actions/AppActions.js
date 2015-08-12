@@ -52,7 +52,6 @@ var AppActions = {
                         user: user
                     });
 
-
                     AppActions.showOrg(user.get('orgs').at(0).id);
                 });
             });
@@ -167,7 +166,8 @@ var AppActions = {
         });
         project.save().done(function() {
             AppDispatcher.dispatch({
-                actionType: AppConstants.PROJECT_ADDED
+                actionType: AppConstants.PROJECT_ADDED,
+                project: project
             });
         });
     },
